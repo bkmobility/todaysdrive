@@ -610,7 +610,7 @@ footer {
           <span class="stat-label">지원 플랫폼</span>
         </div>
         <div class="stat-item">
-          <span class="stat-num">3단계</span>
+          <span class="stat-num">2단계</span>
           <span class="stat-label">자동 인식</span>
         </div>
         <div class="stat-item">
@@ -717,8 +717,8 @@ footer {
       </div>
       <div class="feature-card">
         <div class="feature-icon" style="background:#FFF3E0">📸</div>
-        <h3>3단계 자동 인식</h3>
-        <p>접근성 서비스 → Google Vision API → Claude AI 순서로 자동 인식. 캡처 한 장으로 운행 정보 자동 입력.</p>
+        <h3>2단계 자동 인식</h3>
+        <p>접근성 서비스 → AI 이미지 분석 순서로 자동 인식. 캡처 한 장으로 운행 정보 자동 입력.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon" style="background:#E8F5E9">💰</div>
@@ -780,6 +780,10 @@ footer {
         <div><div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:4px">광고 완전 차단</div><div style="color:rgba(255,255,255,0.5);font-size:12px;line-height:1.6">광고 없이 깔끔하게 사용</div></div>
       </div>
       <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:22px 20px;display:flex;align-items:flex-start;gap:12px">
+        <div style="font-size:22px;flex-shrink:0">📸</div>
+        <div><div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:4px">자동 운행 일지 무제한 기록</div><div style="color:rgba(255,255,255,0.5);font-size:12px;line-height:1.6">캡처 자동 인식 횟수 제한 없이 사용</div></div>
+      </div>
+      <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:22px 20px;display:flex;align-items:flex-start;gap:12px">
         <div style="font-size:22px;flex-shrink:0">📋</div>
         <div><div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:4px">운행 기록 무제한</div><div style="color:rgba(255,255,255,0.5);font-size:12px;line-height:1.6">건수 제한 없이 모두 기록</div></div>
       </div>
@@ -808,7 +812,7 @@ footer {
   <div class="section-inner">
     <div class="reveal">
       <div class="section-tag">AI AUTO RECOGNITION</div>
-      <h2 class="section-title">3단계 하이브리드<br><span>자동 인식</span></h2>
+      <h2 class="section-title">2단계 하이브리드<br><span>자동 인식</span></h2>
       <p class="section-desc">캡처 한 장으로 출발지·도착지·요금·수수료가 자동 입력됩니다.<br>단계별 폴백으로 최고의 인식률 보장.</p>
     </div>
     <div class="ocr-steps reveal">
@@ -821,16 +825,9 @@ footer {
       </div>
       <div class="ocr-step step2">
         <div class="ocr-step-num">2</div>
-        <div class="ocr-step-icon">🔍</div>
-        <h3>Google Vision API</h3>
-        <p>캡처 이미지를 Google Cloud Vision API로 정밀 분석. Tesseract보다 한글 인식률이 월등히 높습니다.</p>
-        <span class="ocr-badge" style="background:rgba(2,136,209,0.3);color:#80DEEA">높은 정확도 · 한글 최적화</span>
-      </div>
-      <div class="ocr-step step3">
-        <div class="ocr-step-num">3</div>
         <div class="ocr-step-icon">🤖</div>
-        <h3>Claude AI Vision</h3>
-        <p>Anthropic Claude AI가 이미지를 분석해 JSON 형태로 정보를 직접 추출. 가장 높은 정확도를 제공하는 최종 폴백.</p>
+        <h3>AI 이미지 분석</h3>
+        <p>AI가 이미지를 분석해 정보를 직접 추출. 가장 높은 정확도를 제공하는 최종 폴백.</p>
         <span class="ocr-badge" style="background:rgba(106,27,154,0.3);color:#CE93D8">최고 정확도 · AI 분석</span>
       </div>
     </div>
@@ -1001,29 +998,6 @@ footer {
         <p>일별·월별·연도별 수익 현황을 확인하고 엑셀로 내보내거나 구글 드라이브에 백업하세요.</p>
       </div>
     </div>
-
-    <!-- 자동 인식 설정 가이드 -->
-    <div style="margin-top:48px;background:linear-gradient(135deg,#0D1B4B,#1a3570);border-radius:var(--radius);padding:40px;color:#fff;" class="reveal">
-      <h3 style="font-size:20px;font-weight:800;margin-bottom:8px">🤖 자동 인식 설정 방법</h3>
-      <p style="color:rgba(255,255,255,0.6);margin-bottom:28px;font-size:14px">3단계 하이브리드 OCR을 설정하면 캡처 한 장으로 모든 정보가 자동 입력됩니다.</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
-        <div style="background:rgba(255,255,255,0.06);border-radius:14px;padding:20px">
-          <div style="font-size:24px;margin-bottom:8px">📱</div>
-          <h4 style="font-size:14px;font-weight:800;margin-bottom:6px">1단계: 접근성 서비스</h4>
-          <p style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.7">설정 → 접근성 → 설치된 서비스 → 오늘의 운행 → 활성화<br>(Play Store 등록 후 사용 가능)</p>
-        </div>
-        <div style="background:rgba(255,255,255,0.06);border-radius:14px;padding:20px">
-          <div style="font-size:24px;margin-bottom:8px">🔍</div>
-          <h4 style="font-size:14px;font-weight:800;margin-bottom:6px">2단계: Google Vision</h4>
-          <p style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.7">앱 내 자동 설정됨. Google Cloud Vision API로 이미지 내 한글 텍스트를 정밀 인식합니다.</p>
-        </div>
-        <div style="background:rgba(255,255,255,0.06);border-radius:14px;padding:20px">
-          <div style="font-size:24px;margin-bottom:8px">🤖</div>
-          <h4 style="font-size:14px;font-weight:800;margin-bottom:6px">3단계: Claude AI</h4>
-          <p style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.7">앱 내 자동 설정됨. 앞 단계 실패 시 Claude AI가 이미지를 분석해 최종 인식합니다.</p>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -1046,7 +1020,7 @@ footer {
         <div class="faq-q" onclick="toggleFaq(this)">
           자동 인식이 안 될 때는 어떻게 하나요? <span class="arrow">▼</span>
         </div>
-        <div class="faq-a">3단계 하이브리드 방식으로 자동 전환됩니다. 접근성 서비스 → Google Vision API → Claude AI 순서로 시도하며, 모두 실패 시 기존 Tesseract 방식으로 폴백됩니다. 수동으로 직접 입력하실 수도 있습니다.</div>
+        <div class="faq-a">2단계 하이브리드 방식으로 자동 전환됩니다. 접근성 서비스 → AI 이미지 분석 순서로 시도하며, 수동으로 직접 입력하실 수도 있습니다.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
