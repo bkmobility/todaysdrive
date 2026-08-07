@@ -717,8 +717,8 @@ footer {
       </div>
       <div class="feature-card">
         <div class="feature-icon" style="background:#FFF3E0">📸</div>
-        <h3>2단계 자동 인식</h3>
-        <p>접근성 서비스 → AI 이미지 분석 순서로 자동 인식. 캡처 한 장으로 운행 정보 자동 입력.</p>
+        <h3>3단계 자동 인식</h3>
+        <p>접근성 서비스 → Google Vision API → Claude AI 순서로 자동 인식. 캡처 한 장으로 운행 정보 자동 입력.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon" style="background:#E8F5E9">💰</div>
@@ -781,7 +781,7 @@ footer {
       </div>
       <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:22px 20px;display:flex;align-items:flex-start;gap:12px">
         <div style="font-size:22px;flex-shrink:0">📸</div>
-        <div><div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:4px">자동 운행 일지 무제한 기록</div><div style="color:rgba(255,255,255,0.5);font-size:12px;line-height:1.6">캡처 자동 인식 횟수 제한 없이 사용</div></div>
+        <div><div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:4px">자동 운행 일지 기록</div><div style="color:rgba(255,255,255,0.5);font-size:12px;line-height:1.6">캡처 자동 인식 AI 이미지 시스템으로 플랫폼 지원</div></div>
       </div>
       <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:22px 20px;display:flex;align-items:flex-start;gap:12px">
         <div style="font-size:22px;flex-shrink:0">📋</div>
@@ -1020,7 +1020,7 @@ footer {
         <div class="faq-q" onclick="toggleFaq(this)">
           자동 인식이 안 될 때는 어떻게 하나요? <span class="arrow">▼</span>
         </div>
-        <div class="faq-a">2단계 하이브리드 방식으로 자동 전환됩니다. 접근성 서비스 → AI 이미지 분석 순서로 시도하며, 수동으로 직접 입력하실 수도 있습니다.</div>
+        <div class="faq-a">3단계 하이브리드 방식으로 자동 전환됩니다. 접근성 서비스 → Google Vision API → Claude AI 순서로 시도하며, 모두 실패 시 기존 Tesseract 방식으로 폴백됩니다. 수동으로 직접 입력하실 수도 있습니다.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
