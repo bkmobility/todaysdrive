@@ -1,4 +1,4 @@
-/* IT 자산관리시스템 v1.9.9 - 관리자 웹 (정적 페이지, Supabase 연동) */
+/* IT 자산관리시스템 v1.9.11 - 관리자 웹 (정적 페이지, Supabase 연동) */
 (function () {
   'use strict';
   var $app = document.getElementById('app');
@@ -350,13 +350,13 @@
   var CATG = ['모니터', 'PC', '노트북', '스캐너', '기타'], CATG_COL = { '모니터': '#2f7df6', 'PC': '#1e8e3e', '노트북': '#c42b1c', '스캐너': '#e9a100', '기타': '#b0b7c3' };
   function catGrp(c) { c = String(c || ''); return c === '모니터' ? '모니터' : (c === 'PC' || c === 'PC 본체') ? 'PC' : c === '노트북' ? '노트북' : /스캐너/.test(c) ? '스캐너' : '기타'; }
   var ROUTES = [['dashboard', '대시보드'], ['assets', '자산 관리'], ['check', '현황 점검'], ['support', '원격 지원'], ['employees', '인사 정보'], ['data', '데이터 관리'], ['inventory', '실사 (재물조사)']];
-  function navRoutes() { return isMain() ? ROUTES.concat([['audit', '이력 관리'], ['admins', '관리자'], ['reports', '보고서']]) : ROUTES; }   // v1.9.5: 이력 관리·관리자·보고서는 메인 관리자 전용
+  function navRoutes() { return isMain() ? ROUTES.concat([['audit', '이력 관리'], ['admins', '관리자'], ['reports', '보고서'], ['security', '보안 설정']]) : ROUTES; }   // v1.9.5: 이력 관리·관리자·보고서는 메인 관리자 전용 / v1.9.11: 보안 설정도 메인 관리자 전용
   function denyPage() { shell('dashboard', '<div class="card" style="text-align:center;padding:30px 20px;max-width:560px;margin:30px auto"><div style="font-size:30px">🔒</div><h2 style="margin:6px 0">접근 권한이 없습니다</h2><div class="note" style="line-height:1.8">이 메뉴(이력 관리 · 관리자 · 보고서)는 <b>메인 관리자</b>만 열 수 있습니다.<br>주소를 직접 입력해 들어와도 이 화면이 표시됩니다.</div><div style="margin-top:14px"><a class="btn pri" href="#/dashboard">대시보드로 이동</a></div></div>'); }
   function shell(active, html) {
     var nav = navRoutes().map(function (r) { var n = r[0] === 'support' ? S.support.filter(function (x) { return x.status === 'received'; }).length : 0; return '<a href="#/' + r[0] + '" class="' + (r[0] === active ? 'on' : '') + '">' + r[1] + (n ? '<span class="cnt">' + n + '</span>' : '') + '</a>'; }).join('');
     var soon = ['소프트웨어·라이선스', '수명주기·보증', '신청·승인'].map(function (t) { return '<div class="soon">' + t + '<i>예정</i></div>'; }).join('');
     $app.innerHTML = (DEMO ? '<div class="demo">데모 모드 — 예시 데이터이며 저장되지 않습니다. config.js 에 Supabase 정보를 넣으면 실제 데이터가 표시됩니다.</div>' : '') +
-      '<div class="layout"' + (DEMO ? ' style="height:calc(100vh - 26px)"' : '') + '><div class="side"><div class="brand">IT Asset<span>v1.9.9</span></div><div class="nav">' + nav + '<div class="sep">다음 버전</div>' + soon + '</div></div>' +
+      '<div class="layout"' + (DEMO ? ' style="height:calc(100vh - 26px)"' : '') + '><div class="side"><div class="brand">IT Asset<span>v1.9.11</span></div><div class="nav">' + nav + '<div class="sep">다음 버전</div>' + soon + '</div></div>' +
       '<div class="main"><div class="top"><input type="search" id="gs" class="gs" placeholder="통합 검색 (관리번호·사용자·위치·메모 등 모든 항목) (Enter)" value="' + esc(F.q) + '"><a class="btn sm qrtop" href="#/scan" title="자산 QR 스티커 스캔 (모든 전산장비)">▣ QR 스캔</a><div class="sp"></div><div class="who" title="' + esc(adminLabel()) + '">' + whoHtml() + '</div>' + (DEMO ? '' : '<button class="btn sm" id="logout">로그아웃</button>') + '</div><div class="content" id="view">' + (isViewer() ? '<div class="vbanner">조회 전용 계정입니다. 수정·업로드·처리·QR 출력 기능은 사용할 수 없습니다.</div>' : '') + html + '</div></div></div>';
     document.body.classList.toggle('viewer', isViewer());
     var gs = $('#gs'); if (gs) gs.onkeydown = function (e) { if (e.key !== 'Enter') return; F.q = gs.value; F.dept = ''; F.cat = ''; F.catg = ''; F.status = ''; F.company = ''; F.collect = ''; F.page = 1; if (location.hash === '#/assets') pageAssets(); else location.hash = '#/assets'; };
@@ -408,7 +408,7 @@
     var act = S.history.map(function (h) { return { t: h.created_at, a: h.asset_no || '(미등록 PC)', d: h.detail }; })
       .concat(S.imports.map(function (x) { return { t: x.applied_at, a: '인사 명단' + (x.reverted_at ? ' (되돌림)' : ''), d: (x.file_name || '') + ' · 신규 ' + x.added + ' · 변경 ' + x.changed + ' · 퇴사 ' + x.deactivated }; }))
       .sort(function (x, y) { return new Date(y.t) - new Date(x.t); }).slice(0, 6);
-    function k(t, n, s, c, href) { return '<a class="dk" href="' + href + '"><span class="ic" style="background:' + c + '22"><i style="background:' + c + '"></i></span><span><span class="t">' + t + '</span><span class="n">' + n + '</span><span class="s">' + s + '</span></span></a>'; }
+    function k(t, n, s, c, href, go) { return '<a class="dk" href="' + href + '"' + (go ? ' data-go="' + go + '"' : '') + '><span class="ic" style="background:' + c + '22"><i style="background:' + c + '"></i></span><span><span class="t">' + t + '</span><span class="n">' + n + '</span><span class="s">' + s + '</span></span></a>'; }
     function todoCard(t, cnt, sub, link, href) { var c = cnt ? (t === '미등록 PC' || t === '사용자 불일치' ? '#e9a100' : '#c42b1c') : '#1e8e3e'; return '<a class="todo" href="' + href + '"><div class="th"><span class="dot" style="background:' + c + '"></span>' + t + ' <b>' + cnt + '</b></div><div class="ts">' + sub + '</div><div class="tl">' + link + ' ›</div></a>'; }
     var allClear = !unreg && !stale && !mism && !leaver.length;
     var todo = allClear ? '<div class="note" style="padding:8px 0">오늘 처리할 일이 없습니다. ✓</div>' : '<div class="todos">' +
@@ -432,7 +432,7 @@
       return (n === '전체' ? '<div class="cosep"></div>' : '') + '<div class="corow' + (n === co ? ' on' : '') + '" data-co="' + esc(n) + '"><span class="rd"><i></i></span><span class="nm">' + esc(n) + '</span><b>' + cnt.toLocaleString() + '</b><span class="pc">' + (n === '전체' ? '' : (A.length ? Math.round(cnt / A.length * 100) : 0) + '%') + '</span></div>';
     }).join('') + (noCo ? '<div class="note" style="margin-top:6px">회사 미지정 ' + noCo.toLocaleString() + '건 (전체에만 포함) · <a href="#/data">데이터 관리</a>에서 지정</div>' : '');
     shell('dashboard', '<div class="row"><h1>대시보드</h1><span class="note">' + esc(ymd(new Date()) + ' ' + hm(new Date())) + ' 기준</span></div>' +
-      '<div class="dks">' + k('전체 자산', A.length.toLocaleString(), '엑셀 가져오기 기준', '#2f7df6', '#/assets') + k('오늘 확인된 PC', today.toLocaleString(), '수집률 ' + (pcs.length ? Math.round(today / pcs.length * 100) : 0) + '%', '#1e8e3e', '#/assets') + k('점검 필요', stale.toLocaleString(), '7일 이상 미확인', '#c42b1c', '#/check/stale') + k('보증 만료 예정', warrSoon.toLocaleString(), '30일 이내', '#e9a100', '#/assets') + k('지원 요청', recv.toLocaleString(), '미처리 · 오늘 접수 ' + recvToday, '#7a4bd6', '#/support') + '</div>' +
+      '<div class="dks">' + k('전체 자산', A.length.toLocaleString(), '엑셀 가져오기 기준', '#2f7df6', '#/assets') + k('오늘 확인된 PC', today.toLocaleString(), '수집률 ' + (pcs.length ? Math.round(today / pcs.length * 100) : 0) + '%', '#1e8e3e', '#/assets', 'collect:today') + k('점검 필요', stale.toLocaleString(), '7일 이상 미확인', '#c42b1c', '#/check/stale') + k('보증 만료 예정', warrSoon.toLocaleString(), '30일 이내', '#e9a100', '#/assets') + k('지원 요청', recv.toLocaleString(), '미처리 · 오늘 접수 ' + recvToday, '#7a4bd6', '#/support') + '</div>' +
       '<div class="card dwide" style="border-left:4px solid #e9a100"><h3>오늘 처리할 일 <span class="note" style="font-weight:400">— 누르면 해당 목록으로 이동</span></h3>' + todo + '</div>' +
       '<div class="dtop">' +
       '<div class="card"><h3>회사별 자산</h3>' + coRows + '<div class="note codet">회사를 누르면 오른쪽 두 카드가 바뀝니다<a href="#/company/' + encodeURIComponent(co) + '">회사별 상세 보기 ›</a></div></div>' +
@@ -1495,6 +1495,7 @@
       busy = true; $('#go').disabled = true;
       try {
         var j = await fnCall('admin-login', { sabun: n, password: pw });
+        if (j.need_otp) { busy = false; pageLoginOtp(n, pw); return; }   // v1.9.11: 메인 관리자는 비밀번호가 맞아도 OTP 단계로 전환
         var r = await sb.auth.setSession({ access_token: j.access_token, refresh_token: j.refresh_token });
         if (r.error) throw r.error;
         busy = false; start();
@@ -1502,6 +1503,26 @@
     }
     $('#go').onclick = go; $('#pw').onkeydown = function (e) { if (e.key === 'Enter') go(); }; $('#sbn').onkeydown = function (e) { if (e.key === 'Enter') $('#pw').focus(); };
     $('#sbn').focus();
+  }
+  // v1.9.11: 메인 관리자 2단계 인증(OTP) 입력 화면 — 사번·비밀번호는 이미 확인된 상태로, 화면에는 비밀번호를 다시 보여주지 않음
+  function pageLoginOtp(sabun, password) {
+    $app.innerHTML = '<div class="login"><div class="lgh"><div class="lgt">인증 코드 입력</div><div class="lgs">Google Authenticator 앱의 6자리 숫자</div></div><input type="text" id="otpc" inputmode="numeric" maxlength="6" style="width:100%;box-sizing:border-box;text-align:center;letter-spacing:6px;font-size:20px"><div style="margin-top:16px"><button class="btn pri" id="go2" style="width:100%;height:36px">확인하고 로그인</button></div><div class="err" id="er2"></div><div class="note" style="margin-top:10px;font-size:11px"><a href="#" id="back2">‹ 사번으로 돌아가기</a></div></div>';
+    var busy = false;
+    $('#back2').onclick = function (e) { e.preventDefault(); pageLogin(); };
+    async function go2() {
+      if (busy) return;
+      var code = $('#otpc').value.trim(); $('#er2').textContent = '';
+      if (!/^\d{6}$/.test(code)) { $('#er2').textContent = '6자리 숫자를 입력하세요.'; return; }
+      busy = true; $('#go2').disabled = true;
+      try {
+        var j = await fnCall('admin-login', { sabun: sabun, password: password, otp_code: code });
+        var r = await sb.auth.setSession({ access_token: j.access_token, refresh_token: j.refresh_token });
+        if (r.error) throw r.error;
+        busy = false; start();
+      } catch (e) { busy = false; $('#go2').disabled = false; $('#er2').textContent = e.message || '인증에 실패했습니다.'; $('#otpc').value = ''; }
+    }
+    $('#go2').onclick = go2; $('#otpc').onkeydown = function (e) { if (e.key === 'Enter') go2(); };
+    $('#otpc').focus();
   }
   // ---------- v1.9.4: 관리자 등록 (메인 관리자 전용) ----------
   var ADM = { list: null, demo: null };
@@ -1654,6 +1675,58 @@
       $('#ax', m.d).onclick = function () { m.close(); resolve(null); }; $('.mx', m.d).onclick = $('#ax', m.d).onclick;
       $('#aok', m.d).onclick = function () { var v = t.value.trim(); if (!v) { t.focus(); return; } m.close(); resolve(v); };
     });
+  }
+  // ---------- v1.9.11: 보안 설정 (메인 관리자 전용) ----------
+  async function secCall(action, body) {
+    return fnCall('admin-security', Object.assign({ action: action }, body || {}), await myToken());
+  }
+  function demoSec(action, b) {
+    if (action === 'status') return { otp_enabled: !!S.secOtp, telegram_configured: true, geo_block: true, auto_logout_minutes: 30 };
+    if (action === 'otp_begin') return { secret: 'JBSWY3DPEHPK3PXP', otpauth: 'otpauth://totp/demo' };
+    if (action === 'otp_confirm') { if (String(b.code || '') !== '000000') throw new Error('인증 코드가 올바르지 않습니다. (데모에서는 000000 을 입력하세요)'); S.secOtp = true; return { ok: true }; }
+    if (action === 'otp_disable') { S.secOtp = false; return { ok: true }; }
+    if (action === 'test_telegram') return { ok: true };
+    throw new Error('알 수 없는 요청입니다.');
+  }
+  async function pageSecurity() {
+    if (!isMain()) { denyPage(); return; }
+    var st; try { st = DEMO ? demoSec('status') : await secCall('status'); } catch (e) { shell('security', '<h1>보안 설정</h1><div class="note" style="color:#c42b1c;margin-top:8px">' + esc(e.message) + '</div>'); return; }
+    shell('security', '<h1>보안 설정 <span class="note" style="font-weight:400">· 메인 관리자만 볼 수 있습니다</span></h1>' +
+      '<div class="secg">' +
+      '<div class="card seccard"><div class="row"><b>텔레그램 로그인 알림</b>' + (st.telegram_configured ? badge('연결됨', 'ok') : badge('미설정', 'bad')) + '</div><div class="note" style="margin-top:4px">관리자 계정으로 로그인에 성공할 때마다 설정된 텔레그램 방으로 알림을 보냅니다. (서버 환경변수 TELEGRAM_BOT_TOKEN·TELEGRAM_CHAT_ID 설정 필요 — 설치가이드 참고)</div><div style="margin-top:10px"><button class="btn sm" id="sec_tg_test"' + (st.telegram_configured ? '' : ' disabled') + '>테스트 알림 보내기</button></div></div>' +
+      '<div class="card seccard"><div class="row"><b>2단계 인증 (OTP)</b>' + (st.otp_enabled ? badge('설정됨', 'ok') : badge('미설정', 'gray')) + '</div><div class="note" style="margin-top:4px">메인 관리자(나) 계정에만 적용됩니다. 켜면 로그인 시 Google Authenticator 등 OTP 앱의 6자리 코드를 추가로 입력해야 합니다.</div><div style="margin-top:10px">' + (st.otp_enabled ? '<button class="btn sm" id="sec_otp_redo">다시 등록 (QR 재발급)</button> <button class="btn sm dng" id="sec_otp_off">해제</button>' : '<button class="btn sm pri" id="sec_otp_on">OTP로 등록</button>') + '</div></div>' +
+      '<div class="card seccard"><div class="row"><b>자동 로그아웃</b>' + badge(st.auto_logout_minutes + '분 고정', 'gray') + '</div><div class="note" style="margin-top:4px">모든 관리자 계정은 화면 조작 없이 ' + st.auto_logout_minutes + '분이 지나면 자동으로 로그아웃됩니다(설정 변경 불가). 다른 사이트에 갔다가 뒤로가기로 돌아와도 즉시 다시 로그인해야 합니다.</div></div>' +
+      '<div class="card seccard"><div class="row"><b>해외 접속 차단</b>' + (st.geo_block ? badge('켜짐', 'ok') : badge('꺼짐', 'bad')) + '</div><div class="note" style="margin-top:4px">접속 IP가 대한민국이 아니면 로그인 자체가 차단됩니다. 해외 출장 등 예외가 필요하면 전산지원파트(서버 환경변수 GEO_BLOCK)에서 임시로 꺼야 합니다.</div></div>' +
+      '</div>');
+    var tgBtn = $('#sec_tg_test'); if (tgBtn) tgBtn.onclick = async function () { tgBtn.disabled = true; tgBtn.textContent = '보내는 중…'; try { await (DEMO ? demoSec('test_telegram') : secCall('test_telegram')); toast('테스트 알림을 보냈습니다. 텔레그램 방을 확인하세요.'); } catch (e) { fail(e); } tgBtn.disabled = false; tgBtn.textContent = '테스트 알림 보내기'; };
+    var onBtn = $('#sec_otp_on'); if (onBtn) onBtn.onclick = otpSetupDialog;
+    var redoBtn = $('#sec_otp_redo'); if (redoBtn) redoBtn.onclick = otpSetupDialog;
+    var offBtn = $('#sec_otp_off'); if (offBtn) offBtn.onclick = async function () {
+      var code = await askText('2단계 인증 해제', '해제하려면 지금 OTP 앱에 표시된 6자리 코드를 입력하세요.', '', '해제');
+      if (code === null) return;
+      try { await (DEMO ? demoSec('otp_disable', { code: code }) : secCall('otp_disable', { code: code })); toast('2단계 인증을 해제했습니다.'); pageSecurity(); } catch (e) { fail(e); }
+    };
+  }
+  function otpSetupDialog() {
+    (async function () {
+      var r; try { r = DEMO ? demoSec('otp_begin') : await secCall('otp_begin'); } catch (e) { fail(e); return; }
+      var q = qrcode(0, 'M'); q.addData(r.otpauth); q.make();
+      var key = (r.secret.match(/.{1,4}/g) || [r.secret]).join(' ');
+      var m = openModal('<div class="mh"><b>2단계 인증(OTP) 등록</b><button class="mx" type="button">✕</button></div>' +
+        '<div class="note" style="margin-bottom:10px">Google Authenticator(또는 Microsoft Authenticator) 앱을 켜고 아래 QR코드를 스캔하세요.</div>' +
+        '<div style="display:flex;gap:16px;align-items:flex-start">' + q.createSvgTag({ cellSize: 4, margin: 0 }) +
+        '<div style="flex:1"><div class="note">QR코드를 스캔할 수 없으면 아래 키를 앱에 직접 입력하세요.</div><div class="pwbox" style="margin-top:6px"><code>' + esc(key) + '</code></div></div></div>' +
+        '<div class="ms">앱에 표시된 6자리 코드</div><input type="text" id="otp_c" inputmode="numeric" maxlength="6" style="width:140px;letter-spacing:3px;font-size:16px;text-align:center">' +
+        '<div class="mf"><button class="btn" id="otp_x" type="button">취소</button><button class="btn pri" id="otp_ok" type="button">등록 완료</button></div>', 480);
+      $('#otp_x', m.d).onclick = m.close;
+      $('#otp_c', m.d).focus();
+      $('#otp_ok', m.d).onclick = async function () {
+        var code = $('#otp_c', m.d).value.trim(); if (!/^\d{6}$/.test(code)) { toast('6자리 숫자를 입력하세요.'); return; }
+        var btn = this; btn.disabled = true; btn.textContent = '확인 중…';
+        try { await (DEMO ? demoSec('otp_confirm', { code: code }) : secCall('otp_confirm', { secret: r.secret, code: code })); m.close(); toast('2단계 인증을 등록했습니다.'); pageSecurity(); }
+        catch (e) { btn.disabled = false; btn.textContent = '등록 완료'; toast(e.message || '확인에 실패했습니다.'); }
+      };
+    })();
   }
   function demoAudit() {
     var t = function (h, m) { var d = new Date(); d.setHours(h, m, 12, 0); return d.toISOString(); };
@@ -2782,6 +2855,7 @@
       else if (p === 'employees') pageEmployees(arg);
       else if (p === 'admins') pageAdmins();
       else if (p === 'reports') pageReports(arg);
+      else if (p === 'security') pageSecurity();
       else if (p === 'audit') pageAudit();
       else if (p === 'inventory') { var iv = arg.split('/')[0]; if (iv) pageInvDetail(iv); else pageInventory(); }
       else if (p === 'inv-scan') pageInvScan(arg);
@@ -2835,8 +2909,41 @@
       $app.innerHTML = '<div style="padding:40px;text-align:center;color:#5c5c5c">불러오는 중…</div>';
       await loadAll();
       window.addEventListener('hashchange', route); route();
-      if (!DEMO) startSupportPoll();
+      if (!DEMO) { startSupportPoll(); startIdleTimer(); }
     } catch (e) { $app.innerHTML = '<div style="padding:40px"><h1>오류</h1><p class="err">' + esc(e.message || e) + '</p><p class="note">config.js 의 주소와 키, DB 구조(schema.sql) 실행 여부를 확인하세요.</p></div>'; console.error(e); }
   }
+  // ---------- v1.9.11: 자동 로그아웃 (30분 미조작) ----------
+  var IDLE_WARN_MS = 25 * 60 * 1000, IDLE_OUT_MS = 30 * 60 * 1000;
+  var idleWarnT = null, idleOutT = null, idleToastEl = null, idleLast = 0;
+  function idleClearToast() { if (idleToastEl) { idleToastEl.remove(); idleToastEl = null; } }
+  function idleShowWarn() {
+    idleToastEl = document.createElement('div'); idleToastEl.className = 'notice'; idleToastEl.style.background = '#2a2f38'; idleToastEl.style.color = '#fff';
+    idleToastEl.innerHTML = '<b>5분 후 자동 로그아웃됩니다</b><div class="nsub" style="color:#d8dde3">화면을 움직이거나 아무 키나 누르면 계속 사용할 수 있습니다.</div>';
+    idleToastEl.onclick = function () { idleResetTimer(); };
+    document.body.appendChild(idleToastEl);
+  }
+  async function idleDoLogout() {
+    idleClearToast(); clearTimeout(idleWarnT); clearTimeout(idleOutT);
+    try { await sb.auth.signOut(); } catch (e) { /* 무시 */ }
+    pageLogin('장시간 조작이 없어 자동 로그아웃되었습니다. 다시 로그인해 주세요.');
+  }
+  function idleResetTimer() {
+    if (!S.me) return;
+    idleClearToast(); clearTimeout(idleWarnT); clearTimeout(idleOutT);
+    idleWarnT = setTimeout(idleShowWarn, IDLE_WARN_MS);
+    idleOutT = setTimeout(idleDoLogout, IDLE_OUT_MS);
+  }
+  function idleOnActivity() {
+    var now = Date.now(); if (now - idleLast < 5000) return; idleLast = now;   // 너무 자주 재설정하지 않도록 5초 간격으로만 처리
+    idleResetTimer();
+  }
+  function startIdleTimer() {
+    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(function (ev) { document.addEventListener(ev, idleOnActivity, { passive: true }); });
+    idleResetTimer();
+  }
   start();
+  // v1.9.11: 다른 사이트에 갔다가 뒤로가기로 돌아오면(브라우저 캐시 복원) 세션이 남아 있어도 무조건 다시 로그인하도록 함
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted && !DEMO) { sb.auth.signOut().catch(function () { }).then(function () { location.reload(); }); }
+  });
 })();
